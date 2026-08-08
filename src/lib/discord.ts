@@ -137,14 +137,32 @@ class AutoFarm {
     });
   }
 
+	private async notifyCaptcha(): Promise<void> {
+  const webhookUrl = this.setting.webhookUrl;
+
+  if (!webhookUrl) return;
+
+  await fetch(webhookUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      content: `<@${this.client.user?.id}> OwO captcha detected`,
+    }),
+  });
+	}
+
   async handleOwoCaptcha() {
     if (!this.botReady && !this.botStatus) return;
     this.botStatus = false;
     this.botReady = false;
     this.stopAutoFarm();
 
-    this.logger.info('OwO captcha detected');
-    const getOwoUrl = (await getOwoUrlLogin(this.token)) || 'https://owobot.com/captcha';
+		this.logger.info('OwO captcha detected');
+
+		await this.notifyCaptcha();
+		const getOwoUrl = (await getOwoUrlLogin(this.token)) || 'https://owobot.com/captcha';
     notifier.notify({
       title: 'OwO Captcha Detected',
       message: `[${this.client.user?.username}] OwO Captcha Detected`,

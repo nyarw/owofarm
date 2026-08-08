@@ -52,6 +52,7 @@ const config = {
     cookie: '408785106942164992',
   },
   owoId: '408785106942164992',
+  webhookUrl: '',
   checklist_completed: false,
 };
 
